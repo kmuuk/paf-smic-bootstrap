@@ -19,10 +19,10 @@ jobs:
           sudo apt install -y flex bison build-essential gcc-arm-linux-gnueabihf
           
       - name: Configure build
-        run: |
-          cd ./linux/
-          DTC_FLAGS=-@ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make sunxi_defconfig
+        working-directory: ./linux
+        run: DTC_FLAGS=-@ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make sunxi_defconfig
       - name: Build
+        working-directory: ./linux
         run: DTC_FLAGS=-@ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make bindeb-pkg
       - name: Release
         uses: softprops/action-gh-release@v1
