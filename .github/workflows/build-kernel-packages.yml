@@ -1,0 +1,33 @@
+name: Build Kernel Packages
+
+on:
+  push:
+    tags:
+      - "paf-smic*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y flex bison build-essential gcc-arm-linux-gnueabihf
+          
+      - name: Configure build
+        run: |
+          cd ./linux/
+          DTC_FLAGS=-@ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make sunxi_defconfig
+      - name: Build
+        run: DTC_FLAGS=-@ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make bindeb-pkg
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            linux-image*.deb
+            linux-headers*.deb
+            linux-libc*.deb
