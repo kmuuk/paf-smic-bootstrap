@@ -3,7 +3,7 @@ name: Build Kernel Packages
 on:
   push:
     tags:
-      - "paf-smic*"
+      - "paf-kernel-*"
 
 jobs:
   build:
@@ -14,11 +14,16 @@ jobs:
       ARCH: arm
       CROSS_COMPILE: arm-linux-gnueabihf-
     steps:
-      - name: Checkout
+      - name: Checkout upstream
         uses: actions/checkout@v2
         with:
           repository: gregkh/linux
           ref: ${{ env.UPSTREAM_BRANCH }}
+          path: linux
+      - name: Checkout configuration
+        uses: actions/checkout@v2
+      - name: Overwrite configuration
+        run: cp ./sunxi_defconfig ./linux/arch/arm/configs/sunxi_defconfig
       - name: Install dependencies
         run: |
           sudo apt update
