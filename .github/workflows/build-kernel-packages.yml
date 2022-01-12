@@ -14,14 +14,14 @@ jobs:
       ARCH: arm
       CROSS_COMPILE: arm-linux-gnueabihf-
     steps:
+      - name: Checkout configuration
+        uses: actions/checkout@v2
       - name: Checkout upstream
         uses: actions/checkout@v2
         with:
           repository: gregkh/linux
           ref: ${{ env.UPSTREAM_BRANCH }}
           path: linux
-      - name: Checkout configuration
-        uses: actions/checkout@v2
       - name: Overwrite configuration
         run: cp ./sunxi_defconfig ./linux/arch/arm/configs/sunxi_defconfig
       - name: Install dependencies
